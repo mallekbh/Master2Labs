@@ -60,14 +60,15 @@ def serachByTerm(term,invertedIndex):
 
 #3 -----------------------------------------------------
 
-
 def createTfIdfindex(freqIndex, invertedIndex):
 	tfIdfindex = copy(freqIndex)
 	for doc in tfIdfindex:
 		for term in tfIdfindex[doc].keys():
-			print(doc," ",term)
 			tfIdfindex[doc][term] = (freqIndex[doc][term])/ max(freqIndex[doc].values()) * log((len(freqIndex)/len(invertedIndex[term]))+1)
 	return tfIdfindex
  
 
- freqIndex["D1.txt"]["digital"]/ (max(freqIndex["D1.txt"].values()) * log(len(freqIndex)/len(invertedIndex["digital"]))+1)
+freqIndex["D1.txt"]["digital"]/ (max(freqIndex["D1.txt"].values()) * log(len(freqIndex)/len(invertedIndex["digital"]))+1)
+
+
+
