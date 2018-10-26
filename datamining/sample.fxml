@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="688.0" prefWidth="769.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <top>
+      <MenuBar prefHeight="26.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <left>
+      <VBox prefHeight="659.0" prefWidth="299.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox prefHeight="42.0" prefWidth="299.0" spacing="10.0">
+               <children>
+                  <Button fx:id="ouvrir" mnemonicParsing="false" onAction="#OpenFolder" prefHeight="26.0" prefWidth="60.0" text="Ouvrir" />
+                  <ChoiceBox fx:id="fileList" onAction="#CreateDataSet" prefHeight="26.0" prefWidth="198.0" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="7.0" right="5.0" top="7.0" />
+               </padding>
+            </HBox>
+            <Separator prefHeight="0.0" prefWidth="299.0" />
+            <HBox prefHeight="105.0" prefWidth="367.0">
+               <children>
+                  <AnchorPane fx:id="details" prefHeight="148.0" prefWidth="367.0">
+                     <children>
+                        <Label layoutX="11.0" layoutY="6.0" text="Relation:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <GridPane layoutX="11.0" layoutY="37.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="93.0" minWidth="10.0" prefWidth="80.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="166.0" minWidth="10.0" prefWidth="120.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Name: " />
+                              <Label text="Instances:" GridPane.rowIndex="1" />
+                              <Label text="Attributes: " GridPane.rowIndex="2" />
+                              <Text fx:id="relationName" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" />
+                              <Text fx:id="relationInstances" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Text fx:id="relationAttributes" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            <Separator prefHeight="3.0" prefWidth="367.0" />
+            <HBox prefHeight="227.0" prefWidth="367.0">
+               <children>
+                  <AnchorPane prefHeight="227.0" prefWidth="305.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="14.0" text="Selected Attribute:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <ChoiceBox fx:id="attributeList" layoutX="14.0" layoutY="46.0" onAction="#handleAttribute" prefHeight="26.0" prefWidth="261.0" />
+                        <GridPane layoutX="14.0" layoutY="95.0" prefHeight="118.0" prefWidth="160.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="25.0" minHeight="8.0" prefHeight="23.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="47.0" minHeight="8.0" prefHeight="23.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="51.0" minHeight="1.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="81.0" minHeight="2.0" prefHeight="22.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="66.0" minHeight="0.0" prefHeight="26.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Name:" />
+                              <Label text="Type:" GridPane.rowIndex="1" />
+                              <Label text="Missing:" GridPane.rowIndex="2" />
+                              <Text fx:id="selectedAttrName" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" />
+                              <Text fx:id="selectedAttrType" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Text fx:id="selectedAttrMissing" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="Distinct:" GridPane.rowIndex="3" />
+                              <Label text="Missing:" GridPane.rowIndex="4" />
+                              <Text fx:id="selectedAttrDistinct" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Text fx:id="selectedAttrUnique" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+               <opaqueInsets>
+                  <Insets bottom="10.0" />
+               </opaqueInsets>
+            </HBox>
+            <HBox fx:id="statsBox" prefHeight="500.0" prefWidth="367.0">
+               <children>
+                  <ScrollPane fx:id="stats" prefHeight="283.0" prefWidth="299.0">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                    </content>
+                  </ScrollPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <VBox fx:id="dataVisulalisation" prefHeight="519.0" prefWidth="470.0" style="-fx-background-color: grey;" BorderPane.alignment="CENTER">
+         <children>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="1000.0" prefWidth="470.0">
+              <items>
+                <AnchorPane fx:id="tablespace" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <HBox fx:id="datatable" layoutY="-1.0" prefHeight="327.0" prefWidth="468.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0" />
+                     </children>
+                  </AnchorPane>
+                <AnchorPane fx:id="graphspace" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <HBox fx:id="histogram" prefHeight="325.0" prefWidth="469.0" />
+                     </children></AnchorPane>
+              </items>
+            </SplitPane>
+         </children></VBox>
+   </center>
+</BorderPane>
