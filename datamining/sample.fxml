@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -57,7 +58,7 @@
             <Separator prefHeight="0.0" prefWidth="299.0" />
             <HBox prefHeight="105.0" prefWidth="367.0">
                <children>
-                  <AnchorPane fx:id="details" prefHeight="148.0" prefWidth="367.0">
+                  <AnchorPane fx:id="details" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="148.0" prefWidth="367.0">
                      <children>
                         <Label layoutX="11.0" layoutY="6.0" text="Relation:">
                            <font>
@@ -90,7 +91,7 @@
             <Separator prefHeight="3.0" prefWidth="367.0" />
             <HBox prefHeight="227.0" prefWidth="367.0">
                <children>
-                  <AnchorPane prefHeight="227.0" prefWidth="305.0">
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="250.0" prefWidth="299.0">
                      <children>
                         <Label layoutX="14.0" layoutY="14.0" text="Selected Attribute:">
                            <font>
@@ -98,7 +99,14 @@
                            </font>
                         </Label>
                         <ChoiceBox fx:id="attributeList" layoutX="14.0" layoutY="46.0" onAction="#handleAttribute" prefHeight="26.0" prefWidth="261.0" />
-                        <GridPane layoutX="14.0" layoutY="95.0" prefHeight="118.0" prefWidth="160.0">
+                        <MenuButton fx:id="attributeActions" layoutX="14.0" layoutY="88.0" mnemonicParsing="false" text="Actions on attribute">
+                          <items>
+                            <MenuItem fx:id="replacemissing" mnemonicParsing="false" text="Replace missing Values" />
+                              <MenuItem fx:id="normalize" mnemonicParsing="false" text="Normalize" />
+                            <MenuItem fx:id="encode" mnemonicParsing="false" text="Encode" />
+                          </items>
+                        </MenuButton>
+                        <GridPane layoutX="10.0" layoutY="127.0" prefHeight="86.0" prefWidth="160.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -108,7 +116,6 @@
                             <RowConstraints maxHeight="47.0" minHeight="8.0" prefHeight="23.0" vgrow="SOMETIMES" />
                             <RowConstraints maxHeight="51.0" minHeight="1.0" prefHeight="25.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="81.0" minHeight="2.0" prefHeight="22.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="66.0" minHeight="0.0" prefHeight="26.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <Label text="Name:" />
@@ -118,9 +125,7 @@
                               <Text fx:id="selectedAttrType" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Text fx:id="selectedAttrMissing" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Label text="Distinct:" GridPane.rowIndex="3" />
-                              <Label text="Missing:" GridPane.rowIndex="4" />
                               <Text fx:id="selectedAttrDistinct" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <Text fx:id="selectedAttrUnique" strokeType="OUTSIDE" strokeWidth="0.0" text="None" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                            </children>
                         </GridPane>
                      </children>
@@ -130,11 +135,11 @@
                   <Insets bottom="10.0" />
                </opaqueInsets>
             </HBox>
-            <HBox fx:id="statsBox" prefHeight="500.0" prefWidth="367.0">
+            <HBox fx:id="statsBox">
                <children>
-                  <ScrollPane fx:id="stats" prefHeight="283.0" prefWidth="299.0">
+                  <ScrollPane fx:id="stats" prefHeight="577.0" prefWidth="381.0">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                      <AnchorPane prefHeight="0.0" prefWidth="1.0" />
                     </content>
                   </ScrollPane>
                </children>
@@ -145,16 +150,41 @@
    <center>
       <VBox fx:id="dataVisulalisation" prefHeight="519.0" prefWidth="470.0" style="-fx-background-color: grey;" BorderPane.alignment="CENTER">
          <children>
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="1000.0" prefWidth="470.0">
+            <SplitPane dividerPositions="0.5342465753424658" orientation="VERTICAL" prefHeight="792.0" prefWidth="472.0">
               <items>
-                <AnchorPane fx:id="tablespace" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <AnchorPane fx:id="tablespace" prefWidth="470.0">
                      <children>
-                        <HBox fx:id="datatable" layoutY="-1.0" prefHeight="327.0" prefWidth="468.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0" />
+                        <HBox prefHeight="43.0" prefWidth="470.0">
+                           <children>
+                              <MenuButton fx:id="dataSetActions" mnemonicParsing="false" text="Actions on dataSet">
+                                <items>
+                                  <MenuItem fx:id="replaceAllMissing" mnemonicParsing="false" onAction="#fixMissing" text="Replace Missing" />
+                                    <MenuItem mnemonicParsing="false" onAction="#boxplot" text="Box and whiskers plot" />
+                                    <MenuItem fx:id="encodeAll" mnemonicParsing="false" text="encode" />
+                                  <MenuItem fx:id="normalizeAll" mnemonicParsing="false" text="Normalize" onAction="#normalizeAll" />
+                                </items>
+                              </MenuButton>
+                           </children>
+                           <padding>
+                              <Insets bottom="7.0" left="5.0" right="5.0" top="7.0" />
+                           </padding>
+                        </HBox>
+                        <HBox fx:id="datatable" layoutY="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0" />
                      </children>
                   </AnchorPane>
-                <AnchorPane fx:id="graphspace" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <AnchorPane fx:id="graphspace" prefHeight="287.0" prefWidth="470.0">
                      <children>
-                        <HBox fx:id="histogram" prefHeight="325.0" prefWidth="469.0" />
+                        <HBox spacing="15.0">
+                           <children>
+                              <AnchorPane fx:id="histogram" prefHeight="294.0" prefWidth="530.0">
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding></AnchorPane>
+                              <AnchorPane fx:id="boxplot" prefHeight="294.0" prefWidth="530.0">
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="50.0" />
+                                 </padding></AnchorPane>
+                           </children></HBox>
                      </children></AnchorPane>
               </items>
             </SplitPane>

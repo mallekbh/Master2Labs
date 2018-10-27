@@ -6,24 +6,34 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.chart.*;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.BoxAndWhiskerToolTipGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
+import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
+import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
+import sun.plugin.javascript.navig.Anchor;
 import weka.core.Instance;
 import weka.core.converters.ArffLoader;
+
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Controller {
     DataSet dataSet = null;
@@ -48,7 +58,13 @@ public class Controller {
     @FXML
     public HBox datatable;
     @FXML
-    public HBox histogram;
+    public AnchorPane histogram;
+    @FXML
+    public AnchorPane boxplot;
+    @FXML
+    public MenuButton actions;
+    @FXML
+    public MenuItem replaceAllmissing;
     /******************* text fields *************************/
     @FXML
     public Text relationName;
@@ -110,7 +126,11 @@ public class Controller {
         this.selectedAttrName.setText(attributeList.getValue().toString());
 
         /* details */
-        this.selectedAttrType.setText(Integer.toString(dataSet.getData().attribute(attrindex).type()));
+        if(this.dataSet.getData().attribute(attrindex).isNumeric()) {
+            this.selectedAttrType.setText("Numeric");
+        }else {
+            this.selectedAttrType.setText("Nominal");
+        }
         this.selectedAttrMissing.setText(Integer.toString(dataSet.calculateMissingValues(attrindex)));
         this.selectedAttrDistinct.setText(Integer.toString(dataSet.computeDistictValues(attrindex)));
 
@@ -152,7 +172,7 @@ public class Controller {
         stats.setContent(gpane);
 
         // ploting
-        this.plot(attrindex);
+        this.histogram(attrindex);
     }
 
     public static DataSet readFile(String filename) throws IOException {
@@ -192,7 +212,7 @@ public class Controller {
         this.datatable.getChildren().add(this.tableview);
     }
 
-    public void plot(int index) {
+    public void histogram(int index) {
         histogram.getChildren().clear();
         if(dataSet.getData().attribute(index).isNumeric()) {
 
@@ -216,6 +236,66 @@ public class Controller {
             this.histogram.getChildren().add(bc);
 
         }
+    }
+
+    public void fixMissing(ActionEvent actionEvent) {
+        for(int i=0;i<this.dataSet.getData().numAttributes();i++) {
+            this.dataSet.replacelMissingValues(i);
+            this.fillGridView();
+        }
+    }
+
+    public void boxplot(ActionEvent actionEvent)  {
+        this.boxplot.getChildren().clear();
+        final BoxAndWhiskerCategoryDataset dataset = createSampleDataset();
+        final org.jfree.chart.axis.CategoryAxis xAxis = new org.jfree.chart.axis.CategoryAxis("Label");
+        final org.jfree.chart.axis.NumberAxis yAxis = new org.jfree.chart.axis.NumberAxis("Value");
+        yAxis.setAutoRangeIncludesZero(false);
+        final BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer();
+        renderer.setFillBox(true);
+        renderer.setMeanVisible(false);
+
+        //renderer.setToolTipGenerator(new BoxAndWhiskerToolTipGenerator());
+        final CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
+
+        final JFreeChart chart = new JFreeChart(
+                "Box-and-Whisker",
+                new Font("ubuntu-regular", Font.CENTER_BASELINE, 14),
+                plot,
+                true
+        );
+        final ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new java.awt.Dimension(500, 400));
+        javafx.embed.swing.SwingNode d = new javafx.embed.swing.SwingNode();
+        d.setContent(chartPanel);
+        this.boxplot.getChildren().add(d);
+    }
+
+    private BoxAndWhiskerCategoryDataset createSampleDataset() {
+        int categoryCount = 0;
+        for(int i=0;i<this.dataSet.getData().numAttributes();i++) {
+            if(this.dataSet.getData().attribute(i).isNumeric()){
+                categoryCount++;
+            }
+        }
+        final int entityCount = this.dataSet.getData().numInstances();
+        final DefaultBoxAndWhiskerCategoryDataset dataset = new DefaultBoxAndWhiskerCategoryDataset();
+        for (int j = 0; j < categoryCount; j++) {
+            if(this.dataSet.getData().attribute(j).isNumeric()) {
+                final List list = new ArrayList<>();
+                for (int k = 0; k < entityCount; k++) {
+                    list.add(this.dataSet.getData().instance(k).value(j));
+                }
+                dataset.add(list, "DataSet : "+this.dataSet.getData().relationName(), this.dataSet.getData().attribute(j).name());
+            }
+        }
+
+        return dataset;
+    }
+
+    public void normalizeAll(ActionEvent actionEvent) {
+        this.dataSet.normalizeAll();
+        this.fillGridView();
     }
 }
 

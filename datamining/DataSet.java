@@ -74,19 +74,21 @@ public class DataSet {
     }
 
     public void replacelMissingValues(int index) {
-        if (this.data.attribute(index).isNumeric()) {
-            double mean=0;
-            mean = Math.floor(this.computeMean(index));
-            for (int i=0 ; i<data.numInstances(); i++) {
-                if(this.data.instance(i).isMissing(index)) {
-                    this.data.instance(i).setValue(index,mean);
+        if(this.calculateMissingValues(index)>0) {
+            if (this.data.attribute(index).isNumeric()) {
+                double mean=0;
+                mean = Math.floor(this.computeMean(index));
+                for (int i=0 ; i<data.numInstances(); i++) {
+                    if(this.data.instance(i).isMissing(index)) {
+                        this.data.instance(i).setValue(index,mean);
+                    }
                 }
-            }
-        }else{
-            double mode = this.computeMode(index);
-            for(int i=0;i<data.numInstances();i++) {
-                if(Double.isNaN(data.instance(i).value(index))) {
-                    data.instance(i).setValue(index,mode);
+            }else{
+                double mode = this.computeMode(index);
+                for(int i=0;i<data.numInstances();i++) {
+                    if(Double.isNaN(data.instance(i).value(index))) {
+                        data.instance(i).setValue(index,mode);
+                    }
                 }
             }
         }
@@ -218,8 +220,34 @@ public class DataSet {
         return this.Q1(index)-this.Q3(index);
     }
 
+    public List numricValues(int index) {
+        List a = new ArrayList();
+        if(this.getData().attribute(index).isNumeric()) {
+            for(int i=0;i<this.getData().numInstances();i++) {
+                a.add(this.getData().instance(index).value(index));
+            }
+            return a;
+        }else{
+            return null;
+        }
+    }
+
     public Double range(int index) {
         return this.max(index) - this.min(index);
+    }
+
+    public HashMap<String,Integer> discretize(int index) {
+        HashMap<String,Integer> h = new HashMap<>();
+
+        return h;
+    }
+
+    public void normalizeAll() {
+        for(int i=0;i<this.data.numAttributes();i++) {
+            if(this.data.attribute(i).isNumeric()){
+                this.normalize(i);
+            }
+        }
     }
 
 }
