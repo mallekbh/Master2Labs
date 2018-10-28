@@ -101,8 +101,8 @@
                         <ChoiceBox fx:id="attributeList" layoutX="14.0" layoutY="46.0" onAction="#handleAttribute" prefHeight="26.0" prefWidth="261.0" />
                         <MenuButton fx:id="attributeActions" layoutX="14.0" layoutY="88.0" mnemonicParsing="false" text="Actions on attribute">
                           <items>
-                            <MenuItem fx:id="replacemissing" mnemonicParsing="false" text="Replace missing Values" />
-                              <MenuItem fx:id="normalize" mnemonicParsing="false" text="Normalize" />
+                            <MenuItem fx:id="replacemissing" mnemonicParsing="false" text="Replace missing Values" onAction="#fixMissing"/>
+                              <MenuItem fx:id="normalize" mnemonicParsing="false" text="Normalize" onAction="#normalize"/>
                             <MenuItem fx:id="encode" mnemonicParsing="false" text="Encode" />
                           </items>
                         </MenuButton>
@@ -154,16 +154,17 @@
               <items>
                 <AnchorPane fx:id="tablespace" prefWidth="470.0">
                      <children>
-                        <HBox prefHeight="43.0" prefWidth="470.0">
+                        <HBox prefHeight="43.0" prefWidth="470.0" spacing="20.0">
                            <children>
                               <MenuButton fx:id="dataSetActions" mnemonicParsing="false" text="Actions on dataSet">
                                 <items>
-                                  <MenuItem fx:id="replaceAllMissing" mnemonicParsing="false" onAction="#fixMissing" text="Replace Missing" />
+                                  <MenuItem fx:id="replaceAllMissing" mnemonicParsing="false" onAction="#fixAllMissing" text="Replace Missing" />
                                     <MenuItem mnemonicParsing="false" onAction="#boxplot" text="Box and whiskers plot" />
                                     <MenuItem fx:id="encodeAll" mnemonicParsing="false" text="encode" />
-                                  <MenuItem fx:id="normalizeAll" mnemonicParsing="false" text="Normalize" onAction="#normalizeAll" />
+                                  <MenuItem fx:id="normalizeAll" mnemonicParsing="false" onAction="#normalizeAll" text="Normalize" />
                                 </items>
                               </MenuButton>
+                              <Button fx:id="cleargraphs" mnemonicParsing="false" text="Clear" onAction="#clearGraphs"/>
                            </children>
                            <padding>
                               <Insets bottom="7.0" left="5.0" right="5.0" top="7.0" />

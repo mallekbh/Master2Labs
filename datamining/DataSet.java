@@ -1,6 +1,8 @@
 package sample;
 
 import weka.core.Instances;
+
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class DataSet {
@@ -235,6 +237,7 @@ public class DataSet {
     public Double range(int index) {
         return this.max(index) - this.min(index);
     }
+    public Double midRange(int index) { return (this.max(index)+this.min(index))/2;}
 
     public HashMap<String,Integer> discretize(int index) {
         HashMap<String,Integer> h = new HashMap<>();
@@ -248,6 +251,86 @@ public class DataSet {
                 this.normalize(i);
             }
         }
+    }
+
+    public void discriticize(int index) {
+
+    }
+
+    public int checkSkewness(int index) {
+        double mode = this.computeMode(index);
+        double median = this.computeMedian(index);
+        if(mode == median) {
+            return 0; // symetric
+        }else if(mode < median) {
+            return 1; // negatively skewed
+        }else{
+            return 2; // positively skewed
+        }
+    }
+
+    /*public ArrayList<Double> computeBins(int index) {
+        double min = this.min(index);
+        double max = this.max(index);
+        double k = 5 * Math.log(this.computeDistictValues(index));
+        double range = this.data.numInstances() / k;
+
+        System.out.println(k);
+
+        double bin = min;
+
+        ArrayList<Double> bins = new ArrayList<>();
+
+        while (bin<max) {
+            bins.add(bin);
+            bin += range;
+        }
+
+        return bins;
+    }
+
+    public HashMap<String,Double> valuesPerBin(int index) {
+        ArrayList<Double> bins = this.computeBins(index);
+        HashMap<String,Double> values = new HashMap<>();
+
+        for(int i=0;i<bins.size();i++) {
+
+        }
+
+        return values;
+    }
+    */
+
+    public HashMap<String,Integer> valuesPerBin(int index){
+        HashMap<String,Integer> bins = new HashMap<>();
+        double min = this.min(index);
+        double Q1 = this.Q1(index);
+        double median = this.computeMedian(index);
+        double Q3 = this.Q3(index);
+        double max = this.max(index);
+        double value = 0;
+        int b1=0,b2=0,b3=0,b4 = 0;
+
+        for(int i=0;i<this.getData().numInstances();i++) {
+            value = this.getData().instance(i).value(index);
+            if(value < Q1) {
+                b1+= 1;
+            }else if(value > Q1 && value <median) {
+                b2+=1;
+            }else if(value >median && value<Q3) {
+                b2+=1;
+            }else{
+                b4+=1;
+            }
+        }
+
+        bins.put("["+Double.toString(min)+"-"+Double.toString(Q1)+"]",b1);
+        bins.put("["+Double.toString(Q1)+"-"+Double.toString(median)+"]",b2);
+        bins.put("["+Double.toString(median)+"-"+Double.toString(Q3)+"]",b3);
+        bins.put("["+Double.toString(Q3)+"-"+Double.toString(max)+"]",b4);
+
+        return bins;
+
     }
 
 }

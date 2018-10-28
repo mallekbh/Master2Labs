@@ -65,6 +65,12 @@ public class Controller {
     public MenuButton actions;
     @FXML
     public MenuItem replaceAllmissing;
+    @FXML
+    public MenuItem replacemissing;
+    @FXML
+    public MenuItem normalize;
+    @FXML
+    public Button cleargraphs;
     /******************* text fields *************************/
     @FXML
     public Text relationName;
@@ -145,6 +151,7 @@ public class Controller {
             gpane.add(new Text("Max"),1,6);
             gpane.add(new Text("Mode"),1,7);
             gpane.add(new Text("Mean"),1,8);
+            gpane.add(new Text("Midrange"),1,9);
 
             gpane.add(new Text(Double.toString(dataSet.min(attrindex))),2,2);
             gpane.add(new Text(Double.toString(dataSet.Q1(attrindex))),2,3);
@@ -153,6 +160,7 @@ public class Controller {
             gpane.add(new Text(Double.toString(dataSet.max(attrindex))),2,6);
             gpane.add(new Text(Double.toString(dataSet.computeMode(attrindex))),2,7);
             gpane.add(new Text(Double.toString(dataSet.computeMean(attrindex))),2,8);
+            gpane.add(new Text(Double.toString(dataSet.midRange(attrindex))),2,9);
 
         }else{
             HashMap<String,Integer> counts = this.dataSet.valuesCount(attrindex);
@@ -165,6 +173,14 @@ public class Controller {
                 i++;
             }
         }
+        String attributState="";
+        switch(this.dataSet.checkSkewness(attrindex)) {
+            case 0: attributState = "Symetric"; break;
+            case 1: attributState = "Positively skewed"; break;
+            case 2: attributState = "Negatively skewed"; break;
+        }
+
+        gpane.add(new Text(attributState),1,10);
         // styling
         gpane.setHgap(15);
         gpane.setVgap(10);
@@ -173,6 +189,9 @@ public class Controller {
 
         // ploting
         this.histogram(attrindex);
+
+        this.dataSet.valuesPerBin(attrindex);
+
     }
 
     public static DataSet readFile(String filename) throws IOException {
@@ -214,36 +233,45 @@ public class Controller {
 
     public void histogram(int index) {
         histogram.getChildren().clear();
+
+        final CategoryAxis xAxis = new CategoryAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        final BarChart<String,Number> bc = new BarChart<String,Number>(xAxis,yAxis);
+        bc.setTitle(this.dataSet.getData().attribute(index).name());
+        xAxis.setLabel("Label");
+        yAxis.setLabel("Value");
+
+        XYChart.Series series1 = new XYChart.Series();
+
         if(dataSet.getData().attribute(index).isNumeric()) {
-
-        }else{
-            HashMap<String,Integer> values = this.dataSet.valuesCount(index);
-            final CategoryAxis xAxis = new CategoryAxis();
-            final NumberAxis yAxis = new NumberAxis();
-            final BarChart<String,Number> bc =
-                    new BarChart<String,Number>(xAxis,yAxis);
-            bc.setTitle(this.dataSet.getData().attribute(index).name());
-            xAxis.setLabel("Label");
-            yAxis.setLabel("Value");
-
-            XYChart.Series series1 = new XYChart.Series();
-
+            HashMap<String,Integer> values = this.dataSet.valuesPerBin(index);
             values.forEach((k,v)->{
                 series1.getData().add(new XYChart.Data(k,v));
             });
-
-            bc.getData().add(series1);
-            this.histogram.getChildren().add(bc);
-
+        }else{
+            HashMap<String,Integer> values = this.dataSet.valuesCount(index);
+            values.forEach((k,v)->{
+                series1.getData().add(new XYChart.Data(k,v));
+            });
         }
+        bc.getData().add(series1);
+        this.histogram.getChildren().add(bc);
     }
 
-    public void fixMissing(ActionEvent actionEvent) {
+    public void fixAllMissing(ActionEvent actionEvent) {
         for(int i=0;i<this.dataSet.getData().numAttributes();i++) {
             this.dataSet.replacelMissingValues(i);
             this.fillGridView();
         }
     }
+
+    public void fixMissing(ActionEvent actionEvent) {
+        int index = this.dataSet.getData().attribute(this.attributeList.getValue().toString()).index();
+        this.dataSet.replacelMissingValues(index);
+        this.fillGridView();
+    }
+
+
 
     public void boxplot(ActionEvent actionEvent)  {
         this.boxplot.getChildren().clear();
@@ -296,6 +324,17 @@ public class Controller {
     public void normalizeAll(ActionEvent actionEvent) {
         this.dataSet.normalizeAll();
         this.fillGridView();
+    }
+
+    public void normalize(ActionEvent actionEvent) {
+        int index = this.dataSet.getData().attribute(this.attributeList.getValue().toString()).index();
+        this.dataSet.normalize(index);
+        this.fillGridView();
+    }
+
+    public void clearGraphs(ActionEvent actionEvent) {
+        this.histogram.getChildren().clear();
+        this.boxplot.getChildren().clear();
     }
 }
 
