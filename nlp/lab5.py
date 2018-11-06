@@ -46,3 +46,19 @@ def freqOfWord(word, genre):
     print(word,'in',genre,':',fd[word])
 
 freqOfWord
+
+for genre in brown.categories():
+    s=0
+    for type in freqdist[genre]:
+        s+=freqdist[genre][type]
+    print(genre+" => ",s/len(freqdist[genre]))
+
+s = lambda x,y:x+y;
+
+def sum(freqdist,genre):
+	s = 0
+	for type in freqdist[genre]:
+		s+=freqdist[genre][type]
+	return s
+
+[(genre,sum(freqdist[genre])/len(freqdist[genre])) for genre in brown.categories() for type in freqdist[genre]]

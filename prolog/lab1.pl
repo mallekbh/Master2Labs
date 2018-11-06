@@ -138,9 +138,27 @@ femme(houria).
 pere(said,X).
 pere(houria,X).  
 
+%%fusion de deux listes
+
+%
+fusion([],L,L).
+fusion(L,[],L).
+fusion([X|L1],[Y|L2],[X|L3]):-X<Y,!,fusion(L1,[Y|L2],L3).
+fusion(L1,[X|L2],[X|L3]):-fusion(L1,L2,L3).
+
+% supprimer les occurences d'une liste
+
+supptoutes(_,[],[]).
+supptoutes(X,[X|L1],L2):-
+!,
+supptoutes(X,L1,L2).
+supptoutes(X,[Y|L1],[Y|L2]):-supptoutes(X,L1,L2).
 
 
-
+suppocc([],[]).
+suppocc([X|L1],[X|L2]):-
+supptoutes(X,L1,L3),
+suppocc(L3,L2).
 
 
 
